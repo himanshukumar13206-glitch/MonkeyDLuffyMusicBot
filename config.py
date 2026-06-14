@@ -29,7 +29,7 @@ class Config:
 
     # --- Web Dashboard Settings ---
     DASHBOARD_USERNAME = os.getenv("DASHBOARD_USERNAME", "admin")
-    DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "changeme123")
+    DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "iam30426avi")
     DASHBOARD_PORT = int(os.getenv("PORT", 8000))
 
     @classmethod
