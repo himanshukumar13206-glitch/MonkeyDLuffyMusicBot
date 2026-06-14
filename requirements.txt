@@ -1,0 +1,13 @@
+# Core Framework
+pyrogram==2.0.106
+pytgcalls==5.4.1
+yt-dlp==2025.4.1
+pymongo==4.8.0
+
+# Web & Utilities
+python-dotenv==1.0.1
+catboxpy==0.2.0
+aiofiles==24.1.0
+uvicorn==0.34.0
+starlette==0.41.0
+python-multipart==0.0.20
