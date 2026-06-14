@@ -1,5 +1,6 @@
 import asyncio
 import signal
+import sys
 from pyrogram import Client
 from config import Config
 from handlers import start, music, games
@@ -26,20 +27,22 @@ class MusicBot:
 
     async def _start_web_dashboard(self):
         """Run the web dashboard in the same event loop"""
-        config = uvicorn.Config(
-            dashboard_app,
-            host="0.0.0.0",
-            port=Config.DASHBOARD_PORT,
-            log_level="warning",
-            loop="asyncio"
-        )
-        server = uvicorn.Server(config)
-        await server.serve()
+        try:
+            config = uvicorn.Config(
+                dashboard_app,
+                host="0.0.0.0",
+                port=Config.DASHBOARD_PORT,
+                log_level="warning"
+            )
+            server = uvicorn.Server(config)
+            await server.serve()
+        except Exception as e:
+            print(f"⚠️ Dashboard failed to start (non‑critical): {e}")
 
     async def shutdown(self, sig=None):
         """Graceful shutdown handler"""
         print("\n🛑 Shutting down gracefully...")
-        if self.dashboard_task:
+        if self.dashboard_task and not self.dashboard_task.done():
             self.dashboard_task.cancel()
         await self.bot.stop()
         self.shutdown_event.set()
@@ -50,7 +53,7 @@ class MusicBot:
 
         print("⚓ Setting sail with the Straw Hat Pirates! 🏴‍☠️")
         
-        # Start web dashboard as background task
+        # Start web dashboard as background task (ignore if it fails)
         self.dashboard_task = asyncio.create_task(self._start_web_dashboard())
         
         await self.bot.start()
@@ -61,16 +64,19 @@ class MusicBot:
 
 if __name__ == "__main__":
     bot = MusicBot()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     
-    # Handle shutdown signals
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, lambda: asyncio.create_task(bot.shutdown()))
-    
-    try:
-        loop.run_until_complete(bot.start())
-    except KeyboardInterrupt:
-        pass
-    finally:
-        loop.close()
+    # For Unix-like systems (Linux, macOS) – handles Ctrl+C and Render stop signal
+    if sys.platform != "win32":
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(sig, lambda: asyncio.create_task(bot.shutdown()))
+        try:
+            loop.run_until_complete(bot.start())
+        except KeyboardInterrupt:
+            pass
+        finally:
+            loop.close()
+    else:
+        # Windows fallback (no signal handlers)
+        asyncio.run(bot.start())
