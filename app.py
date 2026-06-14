@@ -1,6 +1,4 @@
-import asyncio
-import signal
-import sys
+import asyncio, sys
 from pyrogram import Client
 from config import Config
 from handlers.start import register as start_register
@@ -40,33 +38,13 @@ class MusicBot:
         except Exception as e:
             print(f"⚠️ Dashboard failed to start (non‑critical): {e}")
 
-    async def shutdown(self, sig=None):
-        print("\n🛑 Shutting down gracefully...")
-        if self.dashboard_task and not self.dashboard_task.done():
-            self.dashboard_task.cancel()
-        await self.bot.stop()
-        self.shutdown_event.set()
-
     async def start(self):
-        Config.validate()
         print("⚓ Setting sail with the Straw Hat Pirates! 🏴‍☠️")
         self.dashboard_task = asyncio.create_task(self._start_web_dashboard())
         await self.bot.start()
         print(f"🎵 {self.bot.me.first_name} is now ONLINE! Ready to conquer the Grand Line!")
-        await self.shutdown_event.wait()
+        await asyncio.Event().wait()
 
 if __name__ == "__main__":
     bot = MusicBot()
-    if sys.platform != "win32":
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            loop.add_signal_handler(sig, lambda: asyncio.create_task(bot.shutdown()))
-        try:
-            loop.run_until_complete(bot.start())
-        except KeyboardInterrupt:
-            pass
-        finally:
-            loop.close()
-    else:
-        asyncio.run(bot.start())
+    asyncio.run(bot.start())
