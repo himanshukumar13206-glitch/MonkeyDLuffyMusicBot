@@ -9,13 +9,11 @@ py-tgcalls~=2.2.8
 py-yt-search~=0.5.5
 python-dotenv~=1.2.1
 yt-dlp[default]>=2026.3.3
-ffmpeg
 
 # --- Core Framework ---
 pyrogram==2.0.106
 
 # --- Web & Utilities ---
-catboxpy==0.2.0
 aiofiles==24.1.0
 uvicorn==0.34.0
 starlette==0.41.0
