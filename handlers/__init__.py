@@ -1,1 +1,3 @@
-# This file marks the 'handlers' directory as a Python package
+from . import start
+from . import music
+from . import games
