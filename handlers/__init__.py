@@ -1,1 +1,3 @@
-# Empty file to mark as Python package
+from . import start
+from . import music
+from . import games
