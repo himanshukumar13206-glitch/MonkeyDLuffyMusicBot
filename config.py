@@ -22,6 +22,11 @@ class Config:
     AUTO_LEAVE = int(os.getenv("AUTO_LEAVE", 300))
     DOWNLOAD_PATH = "downloads/"
 
+    # --- Support & Credits ---
+    SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/annyxmusic")   # Your channel link
+    SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/+R62hfuryQvZlYzE9")    # Your group link
+    BOT_CREDIT = "Powered by Avi / @Mad_x_Avi"   # Credit line
+
     # --- Web Dashboard Settings ---
     DASHBOARD_USERNAME = os.getenv("DASHBOARD_USERNAME", "admin")
     DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "changeme123")
