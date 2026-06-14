@@ -3,7 +3,9 @@ import signal
 import sys
 from pyrogram import Client
 from config import Config
-from handlers import start, music, games
+from handlers.start import register as start_register
+from handlers.music import register as music_register
+from handlers.games import register as games_register
 from utils.web_dashboard import app as dashboard_app
 import uvicorn
 
@@ -21,12 +23,11 @@ class MusicBot:
         self.shutdown_event = asyncio.Event()
 
     def _register_handlers(self):
-        start.register(self.bot)
-        music.register(self.bot)
-        games.register(self.bot)
+        start_register(self.bot)
+        music_register(self.bot)
+        games_register(self.bot)
 
     async def _start_web_dashboard(self):
-        """Run the web dashboard in the same event loop"""
         try:
             config = uvicorn.Config(
                 dashboard_app,
@@ -40,7 +41,6 @@ class MusicBot:
             print(f"⚠️ Dashboard failed to start (non‑critical): {e}")
 
     async def shutdown(self, sig=None):
-        """Graceful shutdown handler"""
         print("\n🛑 Shutting down gracefully...")
         if self.dashboard_task and not self.dashboard_task.done():
             self.dashboard_task.cancel()
@@ -48,24 +48,15 @@ class MusicBot:
         self.shutdown_event.set()
 
     async def start(self):
-        # Validate config
         Config.validate()
-
         print("⚓ Setting sail with the Straw Hat Pirates! 🏴‍☠️")
-        
-        # Start web dashboard as background task (ignore if it fails)
         self.dashboard_task = asyncio.create_task(self._start_web_dashboard())
-        
         await self.bot.start()
         print(f"🎵 {self.bot.me.first_name} is now ONLINE! Ready to conquer the Grand Line!")
-        
-        # Wait for shutdown signal
         await self.shutdown_event.wait()
 
 if __name__ == "__main__":
     bot = MusicBot()
-    
-    # For Unix-like systems (Linux, macOS) – handles Ctrl+C and Render stop signal
     if sys.platform != "win32":
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -78,5 +69,4 @@ if __name__ == "__main__":
         finally:
             loop.close()
     else:
-        # Windows fallback (no signal handlers)
         asyncio.run(bot.start())
