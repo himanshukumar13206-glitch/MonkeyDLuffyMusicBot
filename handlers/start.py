@@ -36,22 +36,27 @@ I'm **Monkey D. Luffy**, the King of the Pirates, and I'm here to bring the part
 `/stats` - View bot statistics
 `/dashboard` - Open web control panel
 
-**Powered by:** @Mad_x_Avi
+**{Config.BOT_CREDIT}**
         """
+        
         buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📖 Help", callback_data="help"),
-             InlineKeyboardButton("🎮 Games", callback_data="games")],
+            [InlineKeyboardButton("➕ Join My Crew", url=f"https://t.me/{Config.BOT_USERNAME}?startgroup=start")],
+            [InlineKeyboardButton("📢 Support Channel", url=Config.SUPPORT_CHANNEL),
+             InlineKeyboardButton("👥 Support Group", url=Config.SUPPORT_GROUP)],
             [InlineKeyboardButton("👑 Owner", url="https://t.me/Mad_x_Avi"),
-             InlineKeyboardButton("🌐 Dashboard", url="https://your-app.onrender.com/dashboard")]
+             InlineKeyboardButton("🌐 Dashboard", url="https://your-app.onrender.com/dashboard")],
+            [InlineKeyboardButton("📖 Help", callback_data="help"),
+             InlineKeyboardButton("🎮 Games", callback_data="games")]
         ])
+        
         await message.reply_photo(Config.START_IMAGE_URL, caption=welcome_text, reply_markup=buttons)
 
     @bot.on_callback_query()
     async def callback_handler(client: Client, query: CallbackQuery):
         data = query.data
         if data == "help":
-            await query.message.reply("Use `/help` in any group for command list.")
+            await query.message.reply("Use `/help` in any group for command list.\n\n**Tip:** Add me to a group with the 'Join My Crew' button!")
             await query.answer()
         elif data == "games":
-            await query.message.reply("Available games: `/trivia`, `/guess`, `/slots`")
+            await query.message.reply("Available games: `/trivia`, `/guess`, `/slots`\n\nTry your luck, Nakama!")
             await query.answer()
