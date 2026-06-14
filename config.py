@@ -26,7 +26,7 @@ class Config:
     DASHBOARD_USERNAME = os.getenv("DASHBOARD_USERNAME", "admin")
     DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "changeme123")
     DASHBOARD_PORT = int(os.getenv("PORT", 8000))
-  # --- Validation ---
+
     @classmethod
     def validate(cls):
         if not cls.API_ID or cls.API_ID == 0:
